@@ -18,6 +18,9 @@ const mockRepository = {
 	CheckRegisterCPO: jest
 		.fn()
 		.mockImplementation((type, value) => [[{ STATUS: "SUCCESS" }]]),
+	UpdateCPOByID: jest
+		.fn()
+		.mockImplementation(({ id, data, admin_id }) => [[{ STATUS: "SUCCESS" }]]),
 };
 
 // Example test using Jest

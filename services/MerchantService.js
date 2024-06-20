@@ -7,6 +7,9 @@ const Email = require("../utils/Email");
 const axios = require("axios");
 
 module.exports = class MerchantService {
+	/**
+	 * @type {MerchantRepository}
+	 */
 	#repository;
 
 	constructor(repository) {
