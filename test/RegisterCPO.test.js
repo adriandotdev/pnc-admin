@@ -21,7 +21,6 @@ jest.mock("mysql2", () => {
 	};
 });
 
-// Assuming you have a mock implementation for #repository methods
 const mockRepository = {
 	RegisterCPO: jest.fn().mockResolvedValue([[{ STATUS: "ERROR" }]]),
 	AuditTrail: jest.fn().mockResolvedValue(undefined),
@@ -33,7 +32,6 @@ const mockRepository = {
 		.mockImplementation(({ id, data, admin_id }) => [[{ STATUS: "SUCCESS" }]]),
 };
 
-// Example test using Jest
 describe("RegisterCPO", () => {
 	let registrationService;
 
