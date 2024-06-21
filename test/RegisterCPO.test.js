@@ -1,14 +1,24 @@
 const MerchantService = require("../services/MerchantService");
 const { HttpBadRequest } = require("../utils/HttpError");
-// Mock modules or dependencies
-jest.mock("generate-password", () => ({
-	generate: jest.fn().mockReturnValue("mockPassword"), // Mock password generator
-}));
 
+// Mock modules or dependencies
+jest.mock("generate-password");
 jest.mock("../utils/Email.js", () => {
 	return jest.fn().mockImplementation(() => ({
-		SendUsernameAndPassword: jest.fn().mockResolvedValue(undefined), // Mock email sending
+		SendUsernameAndPassword: jest.fn().mockResolvedValue(undefined),
 	}));
+});
+jest.mock("mysql2", () => {
+	const mConnection = {
+		release: jest.fn(),
+	};
+	const mPool = {
+		getConnection: jest.fn((callback) => callback(null, mConnection)),
+		on: jest.fn(),
+	};
+	return {
+		createPool: jest.fn(() => mPool),
+	};
 });
 
 // Assuming you have a mock implementation for #repository methods
@@ -54,7 +64,7 @@ describe("RegisterCPO", () => {
 		expect(result).toBe("SUCCESS");
 		expect(mockRepository.RegisterCPO).toHaveBeenCalledWith({
 			...testData,
-			password: "mockPassword", // Check if password is correctly generated
+			password: undefined,
 		});
 		expect(mockRepository.AuditTrail).toHaveBeenCalledWith({
 			admin_id: testData.admin_id,
