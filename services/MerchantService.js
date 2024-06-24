@@ -346,6 +346,42 @@ module.exports = class MerchantService {
 	}
 
 	/**
+	 *
+	 * @param {number} cpoOwnerID
+	 * @param {Array<string>} rfidCardTags
+	 * @returns
+	 */
+	async AddRFIDs(cpoOwnerID, rfidCardTags) {
+		/**
+		 * @type {Array<string>}
+		 */
+		let existingRFIDs = await this.#repository.GetRFIDs();
+
+		existingRFIDs = existingRFIDs.map((rfid) => rfid.rfid_card_tag);
+
+		rfidCardTags.forEach((rfid) => {
+			if (existingRFIDs.includes(rfid))
+				throw new HttpBadRequest(`RFID_EXISTS: ${rfid}`, []);
+		});
+
+		const rfidCardsToAdd = rfidCardTags.map((rfid) => [
+			rfid,
+			cpoOwnerID,
+			null,
+			0,
+			0,
+			"PHYSICAL",
+			"UNASSIGNED",
+			new Date(),
+			new Date(),
+		]);
+
+		await this.#repository.AddRFIDs(rfidCardsToAdd);
+
+		return rfidCardsToAdd;
+	}
+
+	/**
 	 * Performs a top-up operation for a Charging Point Operator (CPO) identified by its ID.
 	 *
 	 * @async

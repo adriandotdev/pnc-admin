@@ -425,6 +425,50 @@ module.exports = (app) => {
 	);
 
 	app.post(
+		"/admin/api/v1/merchants/rfids/:cpo_owner_id",
+		[
+			tokenMiddleware.AccessTokenVerifier(),
+			rolesMiddleware.CheckRole(
+				ROLES.ADMIN,
+				ROLES.ADMIN_NOC,
+				ROLES.ADMIN_MARKETING
+			),
+		],
+		async (req, res, next) => {
+			try {
+				logger.info({
+					ADD_RFIDS_REQUEST: {
+						data: {
+							role: req.role,
+							cpo_owner_id: req.params.cpo_owner_id,
+							rfids: req.body.rfids,
+						},
+						message: "SUCCESS",
+					},
+				});
+
+				const result = await service.AddRFIDs(
+					req.params.cpo_owner_id,
+					req.body.rfids
+				);
+
+				logger.info({
+					ADD_RFIDS_RESPONSE: {
+						message: "SUCCESS",
+					},
+				});
+
+				return res
+					.status(200)
+					.json({ status: 200, data: result, message: "Success" });
+			} catch (err) {
+				err.error_name = "ADD_RFIDS_ERROR";
+				next(err);
+			}
+		}
+	);
+
+	app.post(
 		"/admin/api/v1/merchants/topup/:cpo_owner_id",
 		[
 			tokenMiddleware.AccessTokenVerifier(),

@@ -242,6 +242,54 @@ module.exports = class MerchantRepository {
 		});
 	}
 
+	async GetRFIDs() {
+		const QUERY = `
+			SELECT
+				rfid_card_tag
+			FROM 
+				rfid_cards
+		`;
+
+		return new Promise((resolve, reject) => {
+			mysql.query(QUERY, (err, result) => {
+				if (err) {
+					reject(err);
+				}
+
+				resolve(result);
+			});
+		});
+	}
+
+	async AddRFIDs(rfidCards) {
+		const QUERY = `
+
+			INSERT INTO 
+				rfid_cards 
+				(
+					rfid_card_tag, 
+					cpo_owner_id, 
+					user_driver_id, 
+					balance, 
+					is_charging, 
+					rfid_type, 
+					rfid_status, 
+					date_created, 
+					date_modified
+				)
+			VALUES ?
+		`;
+
+		return new Promise((resolve, reject) => {
+			mysql.query(QUERY, [rfidCards], (err, result) => {
+				if (err) {
+					reject(err);
+				}
+
+				resolve(result);
+			});
+		});
+	}
 	/**
 	 * Initiates a top-up operation for a Charging Point Operator (CPO) by ID.
 	 *
