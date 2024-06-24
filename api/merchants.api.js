@@ -4,6 +4,7 @@ const {
 	RoleManagementMiddleware,
 } = require("../middlewares/RoleManagementMiddleware");
 const MerchantService = require("../services/MerchantService");
+const MerchantRepository = require("../repository/MerchantRepository");
 const {
 	HttpUnauthorized,
 	HttpUnprocessableEntity,
@@ -16,7 +17,7 @@ const { validationResult, body } = require("express-validator");
  * @param {import ('express').Express} app
  */
 module.exports = (app) => {
-	const service = new MerchantService();
+	const service = new MerchantService(new MerchantRepository());
 	const tokenMiddleware = new TokenMiddleware();
 	const rolesMiddleware = new RoleManagementMiddleware();
 	/**
