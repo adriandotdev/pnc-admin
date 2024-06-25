@@ -346,10 +346,13 @@ module.exports = class MerchantService {
 	}
 
 	/**
+	 * Adds new RFID card tags for a given CPO owner.
 	 *
-	 * @param {number} cpoOwnerID
-	 * @param {Array<string>} rfidCardTags
-	 * @returns
+	 * @async
+	 * @param {string} cpoOwnerID - The ID of the CPO (Charge Point Operator) owner.
+	 * @param {Array<string>} rfidCardTags - An array of RFID card tags to be added.
+	 * @throws {HttpBadRequest} If any of the RFID card tags already exist.
+	 * @returns {Promise<string>} Returns "SUCCESS" if the operation is successful.
 	 */
 	async AddRFIDs(cpoOwnerID, rfidCardTags) {
 		/**
@@ -378,7 +381,7 @@ module.exports = class MerchantService {
 
 		await this.#repository.AddRFIDs(rfidCardsToAdd);
 
-		return rfidCardsToAdd;
+		return "SUCCESS";
 	}
 
 	/**
