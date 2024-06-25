@@ -90,6 +90,7 @@ require("./api/merchants.api")(app);
 require("./api/locations.api")(app, upload);
 require("./api/evses.api")(app);
 require("./api/reports.api")(app);
+require("./api/user-management.api")(app);
 
 app.use("*", (req, res, next) => {
 	logger.error({
