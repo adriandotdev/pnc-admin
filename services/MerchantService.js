@@ -575,7 +575,7 @@ module.exports = class MerchantService {
 				component.types.includes("country")
 			)?.short_name;
 
-			const party_id = await this.#GeneratePartyID(companyName);
+			const party_id = await this.GeneratePartyID(companyName);
 
 			const result = await this.#repository.RegisterCompanyPartnerDetails({
 				company_name: companyName,
@@ -722,5 +722,9 @@ module.exports = class MerchantService {
 		}
 
 		return partyID.toUpperCase(); // Return the party id. it must be uppercase.
+	}
+
+	async GeneratePartyID(companyName) {
+		return await this.#GeneratePartyID(companyName);
 	}
 };

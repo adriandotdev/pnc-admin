@@ -1,0 +1,652 @@
+version: "3"
+volumes:
+  logsVolume:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "/data/logs"
+
+  uploadsVolume:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "/data/uploads"
+
+services:
+  pnc-registration:
+    build: ./pnc-registration
+    image: pnc-registration
+    environment:
+      - PORT=4013
+      - TZ=Asia/Manila
+      - NODE_ENV=stg
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyASXoodW78ADiwCRsBog4MI9U_he10aTV8
+      - SMS_API_KEY=anpzYXB1bEBzeXNuZXRwaC5jb206NDMzMld1cngh
+      - "PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge"
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+    ports:
+      - "4013:4013"
+    volumes:
+      - logsVolume:/var/www/pnc/logs
+  pnc-login:
+    build: ./pnc-login
+    image: pnc-login
+    environment:
+      - PORT=4001
+      - TZ=Asia/Manila
+      - NODE_ENV=stg
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyASXoodW78ADiwCRsBog4MI9U_he10aTV8
+      - "PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge"
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+    ports:
+      - "4001:4001"
+    volumes:
+      - logsVolume:/var/www/pnc/logs
+  cpms:
+    build: ./cpms
+    image: pnc/cpms
+    environment:
+      - TZ=Asia/Manila
+      - PORT=4101
+      - SERVER_ID=1
+      - ENV=stg
+      - MYSQL_HOST=192.46.227.227
+      - MYSQL_USERNAME=root
+      - MYSQL_PASSWORD=4332wurx
+      - MYSQL_DATABASE=parkncharge_v2
+      - SOCKET_OCPP_SERVER_KEY=VxrEt6rVQMFWDXQhjiypKqc7aS44Zpwh
+      - "SOCKET_CLIENT_URL=ws://127.0.0.1:8082"
+      - SOCKET_JWT_KEY=ZeYVro0jmCXVDAjCdTr758HPDhK6f4Rx
+      - SOCKET_SERVER_HOSTNAME=0.0.0.0
+      - SOCKER_SERVER_PORT=4102
+      - ENCRYPTION_ALGORITHM=aes-256-cbc
+      - ENCRYPTION_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - ENCRYPTION_IV=3bd269bc5b740457
+      - "EMOBILITY_URL=http://stg-emsp-socketserver.parkncharge.com.ph:3000"
+      - SMS_SOURCE=ParkNcharge
+      - SMS_SOURCENPI=0
+      - SMS_SOURCETON=5
+      - "SMS_URL=https://messagingsuite.smart.com.ph//cgphttp/servlet/sendmsg?"
+      - "SMS_CREDENTIALS=jzsapul@sysnetph.com:4332Wurx!"
+    ports:
+      - "4101:4101"
+    volumes:
+      - "/data/logs/cpms:/var/www/pnc/logs/cpms"
+  pnc-timeslot:
+    build: ./pnc-timeslot
+    image: pnc-timeslot
+    environment:
+      - PORT=4003
+      - TZ=Asia/Manila
+      - NODE_ENV=stg
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyASXoodW78ADiwCRsBog4MI9U_he10aTV8
+      - "PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge"
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+    ports:
+      - "4003:4003"
+    volumes:
+      - logsVolume:/var/www/pnc/logs
+  pnc-locations:
+    build: ./pnc-locations
+    image: pnc-locations
+    environment:
+      - PORT=4004
+      - TZ=Asia/Manila
+      - NODE_ENV=stg
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyASXoodW78ADiwCRsBog4MI9U_he10aTV8
+      - "PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge"
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+    ports:
+      - "4004:4004"
+    volumes:
+      - logsVolume:/var/www/pnc/logs
+  pnc-reservation:
+    build: ./pnc-reservation
+    image: pnc-reservation
+    environment:
+      - PORT=4005
+      - TZ=Asia/Manila
+      - NODE_ENV=stg
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyASXoodW78ADiwCRsBog4MI9U_he10aTV8
+      - "PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge"
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+    ports:
+      - "4005:4005"
+    volumes:
+      - logsVolume:/var/www/pnc/logs
+  merchant-rfid-users:
+    build: ./merchant-rfid-users
+    image: merchant-rfid-users
+    environment:
+      - PORT=4007
+      - TZ=Asia/Manila
+      - NODE_ENV=stg
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyASXoodW78ADiwCRsBog4MI9U_he10aTV8
+      - "PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge"
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+    ports:
+      - "4007:4007"
+    volumes:
+      - logsVolume:/var/www/pnc/logs
+  merchant-reports:
+    build: ./merchant-reports
+    image: merchant-reports
+    ports:
+      - "4008:4008"
+    environment:
+      - PORT=4008
+      - TZ=Asia/Manila
+      - NODE_ENV=stg
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyASXoodW78ADiwCRsBog4MI9U_he10aTV8
+      - "PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge"
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+    volumes:
+      - logsVolume:/var/www/pnc/logs
+  merchant-topup:
+    build: ./merchant-topup
+    image: merchant-topup
+    ports:
+      - "4009:4009"
+    environment:
+      - PORT=4009
+      - TZ=Asia/Manila
+      - NODE_ENV=stg
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyASXoodW78ADiwCRsBog4MI9U_he10aTV8
+      - "PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge"
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+    volumes:
+      - logsVolume:/var/www/pnc/logs
+  admin-evses:
+    build: ./admin-evses
+    image: admin-evses
+    ports:
+      - "4012:4012"
+    environment:
+      - PORT=4012
+      - TZ=Asia/Manila
+      - NODE_ENV=stg
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyB03iyW7pYkkVLBIAj_n0oVbJDGTEi38sM
+      - "PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge"
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+    volumes:
+      - logsVolume:/var/www/pnc/logs
+  admin-locations:
+    build: ./admin-locations
+    image: admin-locations
+    ports:
+      - "4011:4011"
+    environment:
+      - PORT=4011
+      - TZ=Asia/Manila
+      - NODE_ENV=stg
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyB03iyW7pYkkVLBIAj_n0oVbJDGTEi38sM
+      - "PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge"
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+    volumes:
+      - uploadsVolume:/var/www/pnc/public/images
+      - logsVolume:/var/www/pnc/logs
+  admin-merchants:
+    build: ./admin-merchants
+    image: admin-merchants
+    ports:
+      - "4010:4010"
+    environment:
+      - PORT=4010
+      - TZ=Asia/Manila
+      - NODE_ENV=stg
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyB03iyW7pYkkVLBIAj_n0oVbJDGTEi38sM
+      - "PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge"
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+    volumes:
+      - logsVolume:/var/www/pnc/logs
+
+  admin-reports:
+    build: ./admin-reports
+    image: admin-reports
+    ports:
+      - "4020:4020"
+    environment:
+      - PORT=4020
+      - TZ=Asia/Manila
+      - NODE_ENV=stg
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyB03iyW7pYkkVLBIAj_n0oVbJDGTEi38sM
+      - "PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge"
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+    volumes:
+      - logsVolume:/var/www/pnc/logs
+
+  pnc-topup:
+    build: ./pnc-topup
+    image: pnc-topup
+    ports:
+      - "4014:4014"
+    environment:
+      - PORT=4014
+      - TZ=Asia/Manila
+      - NODE_ENV=stg
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyB03iyW7pYkkVLBIAj_n0oVbJDGTEi38sM
+      - "PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge"
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+      - AUTHMODULE_AUTHORIZATION=cGFya25jaGFyZ2U6cGFya25jaGFyZ2VzZXJ2aWNl
+      - AUTHMODULE_GRANT_TYPE=topup
+      - AUTHMODULE_URL=http://stg-parkncharge.sysnetph.com:8080/pnc-authmodule/v1/token
+      - GCASH_SOURCE_URL=http://stg-parkncharge.sysnetph.com:8080/paymongo-1/payments/source/gcash
+      - GCASH_PAYMENT_URL=http://stg-parkncharge.sysnetph.com:8080/paymongo-1/payments/payment/gcash
+      - MAYA_PAYMENT_URL=http://stg-parkncharge.sysnetph.com:8080/paymongo-2/payments/payment/maya
+      - MAYA_GET_PAYMENT_URL=http://stg-parkncharge.sysnetph.com:8080/paymongo-2/payments/getpaymentmaya
+    volumes:
+      - logsVolume:/var/www/pnc/logs
+  pnc-qr:
+    build: ./pnc-qr
+    image: pnc-qr
+    ports:
+      - "4015:4015"
+    environment:
+      - PORT=4015
+      - TZ=Asia/Manila
+      - NODE_ENV=stg
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyB03iyW7pYkkVLBIAj_n0oVbJDGTEi38sM
+      - SMS_API_KEY=anpzYXB1bEBzeXNuZXRwaC5jb206NDMzMld1cngh
+      - "PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge"
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+      - AUTHMODULE_AUTHORIZATION=cGFya25jaGFyZ2U6cGFya25jaGFyZ2VzZXJ2aWNl
+      - AUTHMODULE_GRANT_TYPE=topup
+      - AUTHMODULE_URL=http://stg-parkncharge.sysnetph.com:8080/pnc-authmodule/v1/token
+      - GCASH_SOURCE_URL=http://stg-parkncharge.sysnetph.com:8080/paymongo-1/payments/source/gcash
+      - GCASH_PAYMENT_URL=http://stg-parkncharge.sysnetph.com:8080/paymongo-1/payments/payment/gcash
+      - MAYA_PAYMENT_URL=http://stg-parkncharge.sysnetph.com:8080/paymongo-2/payments/payment/maya
+      - MAYA_GET_PAYMENT_URL=http://stg-parkncharge.sysnetph.com:8080/paymongo-2/payments/getpaymentmaya
+    volumes:
+      - logsVolume:/var/www/pnc/logs
+  pnc-ui-payment:
+    build: ./pnc-ui-payment
+    image: pnc-ui-payment
+    ports:
+      - "4018:3001"
+  pnc-ui-qrcode:
+    build: ./pnc-ui-qrcode
+    image: pnc-ui-qrcode
+    ports:
+      - "4019:3001"
+  pnc-ui-admin:
+    build: ./pnc-ui-admin
+    image: pnc-ui-admin
+    ports:
+      - "4030:3001"
+    environment:
+      - NODE_ENV=production
+  emsp-v2:
+    build: ./emsp_v2
+    image: emsp-v2
+    ports:
+      - "4021:4021"
+    environment:
+      - PORT=4021
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=emsp_v2
+      - DB_CONNECTION_LIMIT=20
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=emobility-4332wurx-access
+      - JWT_REFRESH_KEY=emobility-4332wurx-refresh
+      - USERNAME=emobility
+      - PASSWORD=4332wurxemobility
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyASXoodW78ADiwCRsBog4MI9U_he10aTV8
+      - PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:emobility
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+    volumes:
+      - logsVolume:/var/www/emsp/logs
+      - uploadsVolume:/var/www/emsp/public/images
+  emsp-ocpi:
+    build: ./emsp_ocpi
+    image: emsp-ocpi
+    ports:
+      - "4002:4002"
+      - "4022:4022"
+    environment:
+      - SERVER_PORT=4002
+      - SOCKET_PORT=4022
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=emsp_v2
+      - DB_CONNECTION_LIMIT=20
+      - JWT_ACCESS_KEY=emobility-4332wurx-access
+      - JWT_REFRESH_KEY=emobility-4332wurx-refresh
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+      - SOCKET_HOSTNAME=0.0.0.0
+      - SOCKET_OCPP_SERVER_KEY=VxrEt6rVQMFWDXQhjiypKqc7aS44Zpwh
+      - SOCKET_CLIENT_URL=ws://localhost:4022
+      - SOCKET_TOKEN=JqvUmNR5HTEaBmsRqleluywtfy0AUsfs
+    volumes:
+      - logsVolume:/var/www/emsp/logs
+
+  admin-monolithic:
+    build: ./admin-monolithic
+    image: admin-monolithic
+    ports:
+      - "4022:4022"
+    environment:
+      - NODE_ENV=stg
+      - PORT=4022
+      - DB_HOST=192.46.227.227
+      - DB_USER=root
+      - DB_PASSWORD=4332wurx
+      - DB_DATABASE=parkncharge_v2
+      - DB_CONNECTION_LIMIT=10
+      - NODEMAILER_NAME=hostgator
+      - NODEMAILER_HOST=mail.parkncharge.com.ph
+      - NODEMAILER_PORT=465
+      - NODEMAILER_USER=no-reply@parkncharge.com.ph
+      - NODEMAILER_PASSWORD=4332wurx-2023
+      - NODEMAILER_TRANSPORT=smtp
+      - NODEMAILER_SECURE=true
+      - JWT_ACCESS_KEY=parkncharge-4332wurx-access
+      - JWT_REFRESH_KEY=parkncharge-4332wurx-refresh
+      - USERNAME=sysnetparkncharge
+      - PASSWORD=4332wurxparkncharge
+      - WINSTON_LOGGER_MAX_SIZE=52428800
+      - WINSTON_LOGGER_MAX_FILES=5
+      - GOOGLE_GEO_API_KEY=AIzaSyASXoodW78ADiwCRsBog4MI9U_he10aTV8
+      - PARKNCHARGE_SECRET_KEY=sysnetintegratorsinc:parkncharge
+      - CRYPTO_ALGORITHM=aes-256-cbc
+      - CRYPTO_SECRET_KEY=d6F3Efeqd6F3Efeqd6F3Efeqd6F3Efeq
+      - CRYPTO_IV=3bd269bc5b740457
+    volumes:
+      - logsVolume:/var/www/pnc/logs
+      - uploadsVolume:/var/www/pnc/public/images
