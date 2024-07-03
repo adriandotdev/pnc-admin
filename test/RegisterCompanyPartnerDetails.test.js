@@ -130,9 +130,40 @@ describe("Register Company Partner Details", () => {
 
 		const testData = {
 			company_name: "ABC",
-			address: "Laguna",
+			address: "Cabuyao, Laguna",
 			id: 1,
 		};
+
+		axios.get.mockResolvedValue({
+			data: {
+				results: [
+					{
+						address_components: [
+							{
+								long_name: "Cabuyao",
+								short_name: "Cabuyao",
+								types: ["locality", "political"],
+							},
+							{
+								long_name: "Laguna",
+								short_name: "Laguna",
+								types: ["administrative_area_level_2", "political"],
+							},
+							{
+								long_name: "Calabarzon",
+								short_name: "Calabarzon",
+								types: ["administrative_area_level_1", "political"],
+							},
+							{
+								long_name: "Philippines",
+								short_name: "PH",
+								types: ["country", "political"],
+							},
+						],
+					},
+				],
+			},
+		});
 
 		await merchantService.RegisterCompanyPartnerDetails(
 			testData.company_name,
