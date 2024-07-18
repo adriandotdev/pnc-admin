@@ -9,6 +9,8 @@ const { validationResult, body } = require("express-validator");
 const logger = require("../config/winston");
 
 const LocationService = require("../services/LocationService");
+const LocationRepository = require("../repository/LocationRepository");
+
 const {
 	HttpUnprocessableEntity,
 	HttpBadRequest,
@@ -18,7 +20,7 @@ const {
  * @param {import('express').Express} app
  */
 module.exports = (app, upload) => {
-	const service = new LocationService();
+	const service = new LocationService(new LocationRepository());
 	const tokenMiddleware = new TokenMiddleware();
 	const roleMiddleware = new RoleManagementMiddleware();
 	/**

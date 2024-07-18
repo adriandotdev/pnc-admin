@@ -6,10 +6,13 @@ const { HttpBadRequest } = require("../utils/HttpError");
 const logger = require("../config/winston");
 
 module.exports = class LocationService {
+	/**
+	 * @type {LocationRepository}
+	 */
 	#repository;
 
-	constructor() {
-		this.#repository = new LocationRepository();
+	constructor(repository) {
+		this.#repository = repository;
 	}
 
 	/**
@@ -31,7 +34,7 @@ module.exports = class LocationService {
 
 		if (typeof offset !== "number")
 			throw new HttpBadRequest(
-				"Invalid offset. Limit must be in type of number"
+				"Invalid offset. Offset must be in type of number"
 			);
 
 		const totalLocationsInDB = await this.#repository.CountLocations();
