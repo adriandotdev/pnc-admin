@@ -34,8 +34,10 @@ module.exports = class MerchantRepository {
 	GetCPOs(data) {
 		const QUERY = `
 			SELECT 
-				users.username, 
-				cpo_owners.* 
+				users.username,
+				
+				cpo_owners.*,
+				users.user_status AS status
 			FROM cpo_owners 
 			INNER JOIN users ON cpo_owners.user_id = users.id
 			LIMIT ? OFFSET ?
