@@ -397,7 +397,8 @@ module.exports = class MerchantService {
 	 */
 	async Topup(cpoOwnerID, amount, admin_id) {
 		try {
-			if (amount <= 0) throw new HttpBadRequest("INVALID_AMOUNT", []);
+			if (!amount || amount <= 0)
+				throw new HttpBadRequest("INVALID_AMOUNT", []);
 
 			const result = await this.#repository.Topup(cpoOwnerID, amount);
 
