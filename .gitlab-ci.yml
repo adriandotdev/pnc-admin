@@ -37,8 +37,8 @@ deploy:
   script:
     - ssh -o StrictHostKeyChecking=no -i $SSH_KEY $HOST "
       docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD &&
-      docker stop $CONTAINER_NAME || true &&
-      docker rm $CONTAINER_NAME || true &&
+      docker stop '$CONTAINER_NAME' || true &&
+      docker rm '$CONTAINER_NAME' || true &&
       docker images | grep '$IMAGE_NAME' | awk '{print $3}' | xargs docker rmi -f || true &&
       docker pull $IMAGE_NAME &&
       docker run -d -p $PORT:$PORT --name $CONTAINER_NAME --mount type=bind,source=/data/logs,target=/var/www/$ROOT_FOLDER_NAME/logs --mount type=bind,source=/data/uploads,target=/var/www/$ROOT_FOLDER_NAME/public/images $IMAGE_NAME"
