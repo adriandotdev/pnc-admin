@@ -150,7 +150,7 @@ module.exports = class MerchantService {
 	 */
 	async SearchCPOByName(cpoOwnerName) {
 		// Check if it is empty, then return all of the lists
-		if (cpoOwnerName === ":cpo_owner_name") {
+		if (cpoOwnerName === ":cpo_owner_name" || !cpoOwnerName) {
 			const result = await this.#repository.GetCPOs({ limit: 10, offset: 0 });
 
 			return result;
