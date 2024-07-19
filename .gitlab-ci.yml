@@ -25,7 +25,7 @@ build_image:
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
-    - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+    - echo "$REGISTRY_PASSWORD" | docker login -u $REGISTRY_USER --password-stdin
   script:
     - docker build -t $IMAGE_NAME .
     - docker push $IMAGE_NAME
@@ -36,7 +36,7 @@ deploy:
     - chmod 400 $SSH_KEY
   script:
     - ssh -o StrictHostKeyChecking=no -i $SSH_KEY $HOST "
-      docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD &&
+      echo "$REGISTRY_PASSWORD" | docker login -u $REGISTRY_USER --password-stdin &&
       docker stop '$CONTAINER_NAME' || true &&
       docker rm '$CONTAINER_NAME' || true &&
       docker images | grep '$IMAGE_NAME' | awk '{print $3}' | xargs docker rmi -f || true &&
