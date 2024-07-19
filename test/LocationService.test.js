@@ -30,6 +30,13 @@ const mockRepository = {
 	AddLocationFacilities: jest.fn(),
 	AddLocationParkingTypes: jest.fn(),
 	AddLocationParkingRestrictions: jest.fn(),
+	GetBindedLocations: jest.fn(),
+	BindLocation: jest.fn(),
+	UnbindLocation: jest.fn(),
+	GetDefaultFacilities: jest.fn(),
+	GetDefaultParkingTypes: jest.fn(),
+	GetDefaultParkingRestrictions: jest.fn(),
+	SearchLocationByName: jest.fn(),
 	AuditTrail: jest.fn(),
 };
 
@@ -206,7 +213,7 @@ describe("Location Service - Unit Tests", () => {
 		}
 	});
 
-	it("should successfully run the method but not register the location", async () => {
+	it("should successfully run the method but not register the location - RegisterLocation ", async () => {
 		mockRepository.RegisterLocation.mockResolvedValue({ insertId: 1 });
 		mockRepository.AddLocationFacilities.mockResolvedValue(null);
 		mockRepository.AddLocationParkingTypes.mockResolvedValue(null);
@@ -276,7 +283,7 @@ describe("Location Service - Unit Tests", () => {
 		});
 	});
 
-	it("should throw an error when try-catch in register location fails", async () => {
+	it("should throw an error when try-catch in register location fails - RegisterLocation", async () => {
 		mockRepository.RegisterLocation.mockRejectedValue(
 			new HttpInternalServerError("Internal Server Error", [])
 		);
@@ -310,5 +317,129 @@ describe("Location Service - Unit Tests", () => {
 				remarks: "failed",
 			});
 		}
+	});
+
+	it("should successfully retrieve binded locations - GetBindedLocations", async () => {
+		mockRepository.GetBindedLocations.mockResolvedValue([{ id: 1 }]);
+
+		const result = await service.GetBindedLocations(1);
+
+		expect(result).toEqual([{ id: 1 }]);
+		expect(mockRepository.GetBindedLocations).toHaveBeenCalledTimes(1);
+	});
+
+	it("should successfully bind location to CPO Owner - BindLocation", async () => {
+		mockRepository.BindLocation.mockResolvedValue([[{ STATUS: "SUCCESS" }]]);
+
+		const result = await service.BindLocation(1, 2, 3);
+
+		expect(result).toBe("SUCCESS");
+		expect(mockRepository.BindLocation).toHaveBeenCalledTimes(1);
+		expect(mockRepository.AuditTrail).toHaveBeenCalledTimes(1);
+		expect(mockRepository.AuditTrail).toHaveBeenCalledWith({
+			admin_id: 3,
+			cpo_id: null,
+			action: `BIND location to CPO with ID of ${1}`,
+			remarks: "success",
+		});
+	});
+
+	it("should throw an error when status of binding location is not SUCCESS - BindLocation", async () => {
+		mockRepository.BindLocation.mockResolvedValue([[{ STATUS: "FAILED" }]]);
+
+		try {
+			await service.BindLocation(1, 2, 3);
+		} catch (err) {
+			expect(err).toBeInstanceOf(HttpBadRequest);
+			expect(err.message).toBe("FAILED");
+			expect(mockRepository.BindLocation).toHaveBeenCalledTimes(1);
+			expect(mockRepository.AuditTrail).toHaveBeenCalledTimes(1);
+			expect(mockRepository.AuditTrail).toHaveBeenCalledWith({
+				admin_id: 3,
+				cpo_id: null,
+				action: `ATTEMPT to BIND location to CPO with ID of ${1}`,
+				remarks: "failed",
+			});
+		}
+	});
+
+	it("should successfully unbind location from CPO Owner - UnbindLocation", async () => {
+		mockRepository.UnbindLocation.mockResolvedValue([[{ STATUS: "SUCCESS" }]]);
+
+		const result = await service.UnbindLocation(1, 2, 3);
+
+		expect(result).toBe("SUCCESS");
+		expect(mockRepository.UnbindLocation).toHaveBeenCalledTimes(1);
+		expect(mockRepository.AuditTrail).toHaveBeenCalledTimes(1);
+		expect(mockRepository.AuditTrail).toHaveBeenCalledWith({
+			admin_id: 3,
+			cpo_id: null,
+			action: `UNBIND location from CPO with ID of ${1}`,
+			remarks: "success",
+		});
+	});
+
+	it("should throw an error when status of binding location is not SUCCESS - UnbindLocation", async () => {
+		mockRepository.UnbindLocation.mockResolvedValue([[{ STATUS: "FAILED" }]]);
+
+		try {
+			await service.UnbindLocation(1, 2, 3);
+		} catch (err) {
+			expect(err).toBeInstanceOf(HttpBadRequest);
+			expect(err.message).toBe("FAILED");
+			expect(mockRepository.UnbindLocation).toHaveBeenCalledTimes(1);
+			expect(mockRepository.AuditTrail).toHaveBeenCalledTimes(1);
+			expect(mockRepository.AuditTrail).toHaveBeenCalledWith({
+				admin_id: 3,
+				cpo_id: null,
+				action: `ATTEMPT to UNBIND location from CPO with ID of ${1}`,
+				remarks: "failed",
+			});
+		}
+	});
+
+	it("should successfully retrieve default data - GetDefaultData", async () => {
+		mockRepository.GetDefaultFacilities.mockResolvedValue([
+			{ id: 1, facility: "Facility 1" },
+		]);
+
+		mockRepository.GetDefaultParkingTypes.mockResolvedValue([
+			{ id: 1, parking_type: "Parking Type 1" },
+		]);
+
+		mockRepository.GetDefaultParkingRestrictions.mockResolvedValue([
+			{ id: 1, parking_restrictions: "Parking Restrictions 1" },
+		]);
+
+		const result = await service.GetDefaultData();
+
+		expect(result).toEqual({
+			facilities: [{ id: 1, facility: "Facility 1" }],
+			parking_types: [{ id: 1, parking_type: "Parking Type 1" }],
+			parking_restrictions: [
+				{ id: 1, parking_restrictions: "Parking Restrictions 1" },
+			],
+		});
+		expect(mockRepository.GetDefaultFacilities).toHaveBeenCalledTimes(1);
+		expect(mockRepository.GetDefaultParkingTypes).toHaveBeenCalledTimes(1);
+		expect(mockRepository.GetDefaultParkingRestrictions).toHaveBeenCalledTimes(
+			1
+		);
+	});
+
+	it("should successfully retrieve location by name - SearchLocationByName", async () => {
+		mockRepository.SearchLocationByName.mockResolvedValue([
+			{ id: 1, name: "Test Location 1" },
+		]);
+
+		const result = await service.SearchLocationByName("Test Location", 10, 0);
+
+		expect(result).toEqual([{ id: 1, name: "Test Location 1" }]);
+		expect(mockRepository.SearchLocationByName).toHaveBeenCalledTimes(1);
+		expect(mockRepository.SearchLocationByName).toHaveBeenCalledWith(
+			"Test Location",
+			10,
+			0
+		);
 	});
 });
