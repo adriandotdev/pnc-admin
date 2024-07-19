@@ -228,7 +228,10 @@ module.exports = class EVSEService {
 
 		const capabilities = await this.#evseRepository.GetDefaultCapabilities();
 
-		return { payment_types, capabilities };
+		const connector_types =
+			await this.#evseRepository.GetDefaultConnectorTypes();
+
+		return { payment_types, capabilities, connector_types };
 	}
 
 	/**

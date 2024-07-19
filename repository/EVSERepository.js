@@ -250,6 +250,18 @@ module.exports = class EVSERepository {
 		});
 	}
 
+	GetDefaultConnectorTypes() {
+		const QUERY = `SELECT * FROM connector_types`;
+
+		return new Promise((resolve, reject) => {
+			mysql.query(QUERY, (err, result) => {
+				if (err) reject(err);
+
+				resolve(result);
+			});
+		});
+	}
+
 	/**
 	 * Searches for Electric Vehicle Supply Equipment (EVSE) by serial number.
 	 *
