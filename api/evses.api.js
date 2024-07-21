@@ -1,6 +1,10 @@
 // Service
 const EVSEService = require("../services/EVSEService");
 
+// Repository
+const EVSERepository = require("../repository/EVSERepository");
+const ConnectorRepository = require("../repository/ConnectorRepository");
+
 // Middleware
 const TokenMiddleware = require("../middlewares/TokenMiddleware");
 const {
@@ -24,7 +28,10 @@ module.exports = (app) => {
 	 * import your service here
 	 * import your middlewares here
 	 */
-	const service = new EVSEService();
+	const service = new EVSEService(
+		new EVSERepository(),
+		new ConnectorRepository()
+	);
 	const tokenMiddleware = new TokenMiddleware();
 	const roleMiddleware = new RoleManagementMiddleware();
 

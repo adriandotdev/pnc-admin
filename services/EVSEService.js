@@ -7,12 +7,19 @@ const { HttpBadRequest } = require("../utils/HttpError");
 const { v4: uuidv4 } = require("uuid");
 
 module.exports = class EVSEService {
+	/**
+	 * @type {EVSERepository}
+	 */
 	#evseRepository;
+
+	/**
+	 * @type {ConnectorRepository}
+	 */
 	#connectorRepository;
 
-	constructor() {
-		this.#evseRepository = new EVSERepository();
-		this.#connectorRepository = new ConnectorRepository();
+	constructor(evseRepository, connectorRepository) {
+		this.#evseRepository = evseRepository;
+		this.#connectorRepository = connectorRepository;
 	}
 
 	/**
@@ -67,12 +74,18 @@ module.exports = class EVSEService {
 		let conn = null;
 
 		try {
+			const connection = await this.#evseRepository.GetConnection();
+
 			const uid = uuidv4();
 
-			const { result, connection } = await this.#evseRepository.RegisterEVSE({
-				uid,
-				...data,
-			});
+			const result = await this.#evseRepository.RegisterEVSE(
+				{
+					uid,
+					...data,
+				},
+				connection
+			);
+
 			const status = result[0][0].STATUS;
 			conn = connection;
 

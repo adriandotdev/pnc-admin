@@ -1,6 +1,25 @@
 const mysql = require("../database/mysql");
 
 module.exports = class EVSERepository {
+	GetConnection() {
+		return new Promise((resolve, reject) => {
+			mysql.getConnection((err, connection) => {
+				if (err) {
+					reject(err);
+				}
+
+				connection.beginTransaction((err) => {
+					if (err) {
+						connection.release();
+						reject(err);
+					}
+
+					resolve(connection);
+				});
+			});
+		});
+	}
+
 	CountEVSES() {
 		const QUERY = `
 			SELECT
@@ -78,44 +97,35 @@ module.exports = class EVSERepository {
 	 * @param {string} [data.location_id] - The location ID where the EVSE is installed (optional).
 	 * @returns {Promise<Object>} A promise that resolves to an object containing the result of the registration and the database connection.
 	 */
-	RegisterEVSE(data) {
+	RegisterEVSE(data, connection) {
 		const QUERY = `
            CALL WEB_ADMIN_REGISTER_EVSE(?,?,?,?,?,?,?,?,?,?,?)
         `;
 
 		return new Promise((resolve, reject) => {
-			mysql.getConnection((err, connection) => {
-				connection.beginTransaction((err) => {
+			connection.query(
+				QUERY,
+				[
+					data.uid,
+					data.model,
+					data.vendor,
+					data.serial_number,
+					data.box_serial_number,
+					data.firmware_version,
+					data.iccid,
+					data.imsi,
+					data.meter_type,
+					data.meter_serial_number,
+					data.location_id || null,
+				],
+				(err, result) => {
 					if (err) {
-						reject({ err, connection });
-						return;
+						reject(err);
 					}
 
-					connection.query(
-						QUERY,
-						[
-							data.uid,
-							data.model,
-							data.vendor,
-							data.serial_number,
-							data.box_serial_number,
-							data.firmware_version,
-							data.iccid,
-							data.imsi,
-							data.meter_type,
-							data.meter_serial_number,
-							data.location_id || null,
-						],
-						(err, result) => {
-							if (err) {
-								reject({ err, connection });
-							}
-
-							resolve({ result, connection });
-						}
-					);
-				});
-			});
+					resolve(result);
+				}
+			);
 		});
 	}
 
